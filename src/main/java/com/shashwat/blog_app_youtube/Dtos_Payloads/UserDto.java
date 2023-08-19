@@ -1,5 +1,6 @@
 package com.shashwat.blog_app_youtube.Dtos_Payloads;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Models.Role;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -14,12 +15,15 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserDto {
 
+    @JsonView(View.Base.class)
     private Long userId;
 
+    @JsonView(View.Base.class)
     @NotEmpty
     @Size(min = 4, message = "Username Must be of minimum of 4 characters ..!!")
     private String name;
 
+    @JsonView(View.Base.class)
     @Email(message = "Your Email Address is Not Valid ..!!")
     private String email;
 
@@ -29,9 +33,11 @@ public class UserDto {
     //TODO:
     private String password;
 
+    @JsonView(View.Base.class)
     @NotEmpty
     private String about;
 
+    @JsonView(View.Admin.class)
     private Set<RoleDto> roles=new HashSet<>();
 
 }

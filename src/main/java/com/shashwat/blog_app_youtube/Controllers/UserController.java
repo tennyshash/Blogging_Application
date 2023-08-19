@@ -1,9 +1,11 @@
 package com.shashwat.blog_app_youtube.Controllers;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
 import com.shashwat.blog_app_youtube.Services.implementation.UserServiceImple;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ public class UserController {
                 ,HttpStatus.OK);
     }
     //GET ALL USER
+    @JsonView(View.Admin.class) //  when we want to hide some sensitive content eg. password and display rest things
     @GetMapping("/")
     public ResponseEntity<List<UserDto>> getAllUser(
             @RequestParam (value = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
@@ -59,6 +62,7 @@ public class UserController {
     }
 
     //GET A USER
+    @JsonView(View.Admin.class)
     @GetMapping("/{userID}")
     public ResponseEntity<UserDto> getSingleUser(@PathVariable Long userID){
         return ResponseEntity.ok(userService.getUserById(userID));

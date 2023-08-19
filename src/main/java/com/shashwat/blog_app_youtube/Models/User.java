@@ -1,5 +1,7 @@
 package com.shashwat.blog_app_youtube.Models;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,8 +34,10 @@ public class User extends BaseModel implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Comment> comments= new ArrayList<>();
 
+
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
     private List<Post> posts = new ArrayList<>();
+
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
@@ -42,7 +46,7 @@ public class User extends BaseModel implements UserDetails {
     )
     private Set<Role> roles= new HashSet<>();
 
-    //METHODS of UserDetails interface
+    //----------------->METHODS of UserDetails interface
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
