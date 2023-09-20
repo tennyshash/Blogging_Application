@@ -13,4 +13,6 @@ public class JwtAuthResponse {
 
     @CreationTimestamp
     private Date createdAt;
+
+    private UserDto user;
 }

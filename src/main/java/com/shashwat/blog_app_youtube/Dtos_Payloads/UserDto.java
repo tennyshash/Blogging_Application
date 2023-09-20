@@ -1,5 +1,7 @@
 package com.shashwat.blog_app_youtube.Dtos_Payloads;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Models.Role;
 import jakarta.validation.constraints.*;
@@ -15,16 +17,17 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserDto {
 
-    @JsonView(View.Base.class)
+    //@JsonView(View.Base.class)
     private Long userId;
 
     @JsonView(View.Base.class)
-    @NotEmpty
+    @NotEmpty(message = "Field is Blank .! Try Again")
     @Size(min = 4, message = "Username Must be of minimum of 4 characters ..!!")
     private String name;
 
-    @JsonView(View.Base.class)
+    //@JsonView(View.Base.class)
     @Email(message = "Your Email Address is Not Valid ..!!")
+    @NotEmpty(message = "Enter proper email address ")
     private String email;
 
     @NotEmpty
@@ -33,11 +36,21 @@ public class UserDto {
     //TODO:
     private String password;
 
-    @JsonView(View.Base.class)
-    @NotEmpty
+    //@JsonView(View.Base.class)
+    @NotEmpty(message = "Tell Me About Yourself .!")
     private String about;
 
-    @JsonView(View.Admin.class)
+    //@JsonView(View.Admin.class)
     private Set<RoleDto> roles=new HashSet<>();
 
+    @JsonIgnore
+    // To ignore password while displaying but due to some reason it was also ignoring set passwrod so we were not able to set..
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty // hence used this to let set password
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

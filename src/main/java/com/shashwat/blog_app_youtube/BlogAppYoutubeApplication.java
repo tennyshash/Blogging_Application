@@ -42,9 +42,10 @@ public class BlogAppYoutubeApplication implements CommandLineRunner {
 			List<Role> roles=List.of(adminRole,normalRole);
 			List<Role> result=roleRepository.saveAll(roles);
 
-			result.forEach( r-> {
-				System.out.println(r.getRoleName());
-			});
+//			result.forEach( r-> {
+//				System.out.println(r.getRoleName());
+//			});
+			System.out.println("--------------------> READY TO ROLL");
 
 		}catch (Exception e){
 			e.printStackTrace();

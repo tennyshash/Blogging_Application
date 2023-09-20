@@ -40,13 +40,15 @@ public class CommentServiceImple implements CommentService {
     }
 
     @Override
-    public CommentDto createComment(CommentDto commentDto, Long postID) {
+    public CommentDto createComment(CommentDto commentDto,Long userID, Long postID ) {
 
         Post post= postRepository.findById(postID).orElseThrow( ()-> new ResourceNotFoundException( "Post" , "post id" , postID));
         Comment comment=modelMapper.map(commentDto, Comment.class);
 
+        User user=userRepository.findById(userID).orElseThrow( ()-> new ResourceNotFoundException("User" , "User ID",userID));
+
         comment.setPost(post);
-        comment.setUser(post.getUser());
+        comment.setUser(user);
 
         Comment savedComment=commentRepository.save(comment);
 
@@ -59,9 +61,9 @@ public class CommentServiceImple implements CommentService {
         Comment comment=commentRepository.findById(commentID).orElseThrow(
                 ()-> new ResourceNotFoundException("Comment" , " comment ID", commentID)
         );
-
         commentRepository.delete(comment);
     }
+
 
     @Override
     public CommentPaginationResponse getCommentByUser(Long userID, Integer pageNumber, Integer pageSize,

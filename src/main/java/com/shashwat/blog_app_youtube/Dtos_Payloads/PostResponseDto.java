@@ -17,6 +17,8 @@ import java.util.Set;
 public class PostResponseDto {
 
     private Long postID;
+    private Date createdAt;
+    private Date updateAt;
     private String title;
     private String content;
     private String imageName;

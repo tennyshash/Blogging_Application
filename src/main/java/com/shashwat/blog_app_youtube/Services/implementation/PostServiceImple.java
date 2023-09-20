@@ -5,9 +5,11 @@ import com.shashwat.blog_app_youtube.Dtos_Payloads.PostRequestDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.PostResponseDto;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
 import com.shashwat.blog_app_youtube.Models.Category;
+import com.shashwat.blog_app_youtube.Models.Comment;
 import com.shashwat.blog_app_youtube.Models.Post;
 import com.shashwat.blog_app_youtube.Models.User;
 import com.shashwat.blog_app_youtube.Repository.CategoryRepository;
+import com.shashwat.blog_app_youtube.Repository.CommentRepository;
 import com.shashwat.blog_app_youtube.Repository.PostRepository;
 import com.shashwat.blog_app_youtube.Repository.UserRepository;
 import com.shashwat.blog_app_youtube.Services.PostService;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +28,7 @@ public class PostServiceImple implements PostService {
     private PostRepository postRepository;
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
+
 
     @Autowired
     public PostServiceImple(ModelMapper modelMapper, PostRepository postRepository
@@ -41,6 +45,7 @@ public class PostServiceImple implements PostService {
     public PostResponseDto createPost(PostRequestDto postRequestDto, Long userID, Long categoryID){
         User user=userRepository.findById(userID)
                 .orElseThrow( ()-> new ResourceNotFoundException("USer" , "UserID", userID));
+
         Category category= categoryRepository.findById(categoryID)
                 .orElseThrow( ()-> new ResourceNotFoundException("Category" , "Category ID", categoryID));
 
@@ -59,9 +64,13 @@ public class PostServiceImple implements PostService {
         Post post=postRepository.findById(postID)
                 .orElseThrow( ()-> new ResourceNotFoundException( "Post ", "Post ID" ,postID));
 
+        Category category= categoryRepository.findById(request.getCategory().getCategoryID())
+                .orElseThrow( ()-> new ResourceNotFoundException("Category" , "Category ID", request.getCategory().getCategoryID()));
+
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         post.setImageName(request.getImageName());
+        post.setCategory(category);
 
         Post updatedPost=postRepository.save(post);
         return modelMapper.map(updatedPost, PostResponseDto.class);

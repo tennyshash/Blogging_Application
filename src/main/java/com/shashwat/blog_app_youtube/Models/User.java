@@ -3,6 +3,8 @@ package com.shashwat.blog_app_youtube.Models;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 import java.util.stream.Collectors;
-
+import java.util.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 public class User extends BaseModel implements UserDetails {
 
     @Column(name = "user_name",nullable = false,length = 100)
+    
     private String name;
 
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     private String about;

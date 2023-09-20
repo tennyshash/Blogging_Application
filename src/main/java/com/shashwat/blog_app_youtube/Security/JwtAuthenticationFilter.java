@@ -8,6 +8,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private Logger logger= LoggerFactory.getLogger(OncePerRequestFilter.class);
 
     private UserDetailsService userDetailsService;
     private JwtTokenHelper jwtTokenHelper;
@@ -38,6 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. get token
         String requestHeader = request.getHeader("Authorization"); // Authorization is key token is mapped to this
             //Bearer 2354sd  -> how token looks
+        logger.info("Header : {} ", requestHeader);
 
             String username=null;
             String token=null;
@@ -50,26 +54,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     username=jwtTokenHelper.getUsernameFromToken(token);
 
                 }catch (IllegalArgumentException e){
-
-                    System.out.println("Unable to get Jwt token");
-                    throw new ApiException("Unable to get Jwt token");
+                    logger.info("Illegal Argument While Fetching UserName !!");
+                    e.printStackTrace();
+//                    System.out.println("Unable to get Jwt token");
+//                    throw new ApiException("Unable to get Jwt token");
 
                 }catch (ExpiredJwtException e){
-
-                    System.out.println("Token is Expired");
-                    throw new ApiException("Token is Expired");
+                    logger.info("Given Token Is Expired !!");
+                    e.printStackTrace();
+//                    System.out.println("Token is Expired");
+//                    throw new ApiException("Token is Expired");
 
                 }catch (MalformedJwtException e) {
-
-                    System.out.println("Invalid JwT Token");
-                    throw new ApiException("Invalid JwT Token");
+                    logger.info("Some changes has done in Token !! Invalid Token");
+                    e.printStackTrace();
+//                    System.out.println("Invalid JwT Token");
+//                    throw new ApiException("Invalid JwT Token");
                 }catch (Exception e){
-                    System.out.println("Invalid JwT Token");
-                    throw new ApiException("Something wrong with token");
+                    e.printStackTrace();
+
+//                    System.out.println("Invalid JwT Token");
+//                    throw new ApiException("Something wrong with token");
                 }
 
             }else{
-                System.out.println("Jwt token does not begin with bearer");
+                logger.info("Invalid Header Value !! ");
+                //System.out.println("Jwt token does not begin with bearer");
                //throw new ApiException("Jwt token does not begin with bearer");
             }
 
@@ -95,11 +105,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                 }else {
-                    System.out.println("Invalid JwT Token");
+                    logger.info("Invalid Header Value !! ");
+                    //System.out.println("Invalid JwT Token");
                    //throw new ApiException("Invalid JwT Token");
                 }
             }else{
-                System.out.println("UserName is null or context is not null ");
+                logger.info("UserName is null or context is not null ");
+                //System.out.println("UserName is null or context is not null ");
                 //throw new ApiException("UserName is null or context is not null ");
             }
 

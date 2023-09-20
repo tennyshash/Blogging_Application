@@ -23,16 +23,19 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("post/{postID}/comments/")
+    // Create Comment
+    @PostMapping("/user/{userID}/post/{postID}/comments/")
     public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto comment,
+                                                    @PathVariable  Long userID,
                                                     @PathVariable Long postID){
 
-        CommentDto newComment=commentService.createComment(comment,postID);
+        CommentDto newComment=commentService.createComment(comment,userID,postID);
 
         return new ResponseEntity<CommentDto>(newComment, HttpStatus.CREATED);
 
     }
 
+    // Delete Comment
     @DeleteMapping("/comments/{commentID}")
     public ResponseEntity<ApiResponseDto> deleteComment(@PathVariable Long commentID){
 
@@ -43,6 +46,7 @@ public class CommentController {
 
     }
 
+    // Get Comment By User
     @GetMapping("/user/{userID}/comments")
     public ResponseEntity<CommentPaginationResponse> getAllCommentByUser (
             @PathVariable Long userID,

@@ -4,16 +4,29 @@ import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.CategoryDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.CategoryPaginationResponse;
+import com.shashwat.blog_app_youtube.Models.Category;
+import com.shashwat.blog_app_youtube.Repository.CategoryRepository;
 import com.shashwat.blog_app_youtube.Services.implementation.CategoryServiceImple;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/categories")
 public class CategoryController {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private ModelMapper modelMapper;
+
     private CategoryServiceImple categoryService;
 
     @Autowired
@@ -55,5 +68,14 @@ public class CategoryController {
 
         CategoryPaginationResponse categoryList= categoryService.getAllCategory(pageNumber,pageSize,sortBy, sortDir);
         return ResponseEntity.ok(categoryList);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CategoryDto>> getAllCategory( ){
+
+        List<Category> categoryList=categoryRepository.findAll();
+        List<CategoryDto> responses= categoryList.stream().map( category -> modelMapper.map(category,CategoryDto.class)).collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
 }

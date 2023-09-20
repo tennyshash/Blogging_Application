@@ -20,7 +20,7 @@ public class Post  extends  BaseModel{
     @Column(name = "Post_title",nullable = false,length = 100)
     private String title;
 
-    @Column(length = 10000)
+    @Column(length = 10000000)
     private String content;
     private String imageName;
 

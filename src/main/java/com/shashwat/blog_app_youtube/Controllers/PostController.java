@@ -125,7 +125,7 @@ public class PostController {
     }
 
     //POST IMAGE UPLOAD
-    @PostMapping("/posts/image/upload/{postID}")
+    @PostMapping("/posts/{postID}/image/upload")
     public ResponseEntity<ImageResponseDto> uploadPostImage(
             @RequestParam MultipartFile image,
              @PathVariable Long postID
@@ -135,17 +135,18 @@ public class PostController {
             ImageResponseDto imageResponse= new ImageResponseDto();
 
             //TODO: Additional checks
-            if(!image.getContentType().equals(MediaType.IMAGE_JPEG_VALUE)){
+            if( (!image.getContentType().equals(MediaType.IMAGE_PNG_VALUE )) &&
+                    (!image.getContentType().equals(MediaType.IMAGE_JPEG_VALUE ))  ){
 
                 imageResponse.setStatus("FAILURE");
-                imageResponse.setMessage("Only JPEG IS ALLOWED ");
+                imageResponse.setMessage("Only JPEG/PNG IS ALLOWED ");
                 imageResponse.setImageURL("NULL");
 
                 return new ResponseEntity<>(imageResponse,HttpStatus.INTERNAL_SERVER_ERROR);
             }
 //            if(image.isEmpty()){
-//                updatedResponse.setContent("File is Empty .. ! /n Something went wrong ");
-//                return new ResponseEntity<>(updatedResponse,HttpStatus.INTERNAL_SERVER_ERROR);
+//                imageResponse.setMessage("File is Empty .. ! /n Something went wrong ");
+//                return new ResponseEntity<>(imageResponse,HttpStatus.INTERNAL_SERVER_ERROR);
 //            }
 
             String fileName=fileService.uploadImage(path,image);
@@ -155,6 +156,7 @@ public class PostController {
             updatedRequest.setImageName(fileName);
             updatedRequest.setTitle(response.getTitle());
             updatedRequest.setContent(response.getContent());
+            updatedRequest.setCategory(response.getCategory());
 
             postService.updatePost( updatedRequest , postID);
 

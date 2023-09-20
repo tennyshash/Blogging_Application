@@ -2,6 +2,7 @@ package com.shashwat.blog_app_youtube.Dtos_Payloads;
 
 
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class CategoryDto {
 
     private Long categoryID;
 
+    @NotNull
     @Size(min = 4, message = "Min size of category title is 4")
     private String categoryTitle;
 

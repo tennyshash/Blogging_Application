@@ -62,12 +62,13 @@ public class UserController {
     }
 
     //GET A USER
-    @JsonView(View.Admin.class)
+    //@JsonView(View.Admin.class)
     @GetMapping("/{userID}")
     public ResponseEntity<UserDto> getSingleUser(@PathVariable Long userID){
         return ResponseEntity.ok(userService.getUserById(userID));
     }
 
+    // UPDATE ROLE
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{userID}/role/{roleID}")
     public ResponseEntity<ApiResponseDto> updateRole(@PathVariable Long userID,
