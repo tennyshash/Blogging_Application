@@ -60,19 +60,24 @@ public class PostServiceImple implements PostService {
     }
     //UPDATE POST
     @Override
-    public PostResponseDto updatePost(PostRequestDto request, Long postID){
-        Post post=postRepository.findById(postID)
-                .orElseThrow( ()-> new ResourceNotFoundException( "Post ", "Post ID" ,postID));
+    public PostResponseDto updatePost(PostRequestDto request, Long postID) {
+        Post post = postRepository.findById(postID)
+                .orElseThrow(() -> new ResourceNotFoundException("Post ", "Post ID", postID));
 
-        Category category= categoryRepository.findById(request.getCategory().getCategoryID())
-                .orElseThrow( ()-> new ResourceNotFoundException("Category" , "Category ID", request.getCategory().getCategoryID()));
+        Category category = null;
+        if (request.getCategory() != null) {
+            category = categoryRepository.findById(request.getCategory().getCategoryID())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "Category ID", request.getCategory().getCategoryID()));
+        }else{
+            category=post.getCategory();
+        }
 
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        post.setImageName(request.getImageName());
-        post.setCategory(category);
+        post.setTitle(request.getTitle() == null ? post.getTitle() : request.getTitle());
+        post.setContent(request.getContent() == null ? post.getContent() : request.getContent());
+        post.setImageName(request.getImageName() == null ? post.getImageName() : request.getImageName());
+        post.setCategory( category );
 
-        Post updatedPost=postRepository.save(post);
+        Post updatedPost = postRepository.save(post);
         return modelMapper.map(updatedPost, PostResponseDto.class);
     }
 
