@@ -64,6 +64,7 @@ public class PostServiceImple implements PostService {
         Post post = postRepository.findById(postID)
                 .orElseThrow(() -> new ResourceNotFoundException("Post ", "Post ID", postID));
 
+        // Adding If-else for extra verification in case user passes null/ empty field while updating .!
         Category category = null;
         if (request.getCategory() != null) {
             category = categoryRepository.findById(request.getCategory().getCategoryID())
