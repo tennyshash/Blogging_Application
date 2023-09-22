@@ -1,6 +1,7 @@
 package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
@@ -44,16 +45,26 @@ public class UserServiceImple implements UserService {
         return userToDto(user);
     }
     @Override
-    public UserDto updateUser(UserDto userDto,Long userId){
+    public UpdateUserDto updateUser(UpdateUserDto request, Long userId){
+
         User user=userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
 
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setAbout(userDto.getAbout());
-        user.setPassword(userDto.getPassword());
+        user.setName(request.getName() == null ? user.getName() : request.getName());
+        user.setEmail(request.getEmail() == null ? user.getEmail() : request.getEmail());
+        user.setAbout(request.getAbout() == null ? user.getAbout() : request.getAbout());
+
+        if (request.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }else {
+            user.setPassword(user.getPassword());
+        }
 
         User updateUser=userRepository.save(user);
-        return userToDto(updateUser);
+
+        UpdateUserDto response= modelMapper.map( updateUser,UpdateUserDto.class);
+        response.setPassword(" Mai Nahi btauga .!!");
+
+        return  response;
     }
     @Override
     public UserDto getUserById(Long userId){

@@ -3,6 +3,7 @@ package com.shashwat.blog_app_youtube.Controllers;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
@@ -26,16 +27,18 @@ public class UserController {
         this.userService = userService;
     }
 
+    /*
     //CREATE
     @PostMapping("/")
     public ResponseEntity<UserDto> createUser(@Valid  @RequestBody UserDto userDto){
         UserDto createdUser=userService.createUser(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
-    //UPDATE
+    }   */
+
+    //UPDATE USER
     @PutMapping("/{userID}")
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable Long userID){
-        UserDto updatedUSer= userService.updateUser(userDto,userID);
+    public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto updateUser, @PathVariable Long userID){
+        UpdateUserDto updatedUSer= userService.updateUser(updateUser,userID);
         return   ResponseEntity.ok(updatedUSer);
     }
 

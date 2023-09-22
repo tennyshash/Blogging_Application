@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,6 @@ public class Post  extends  BaseModel{
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Comment> comments= new HashSet<>();
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Comment> comments= new ArrayList<>();
 }

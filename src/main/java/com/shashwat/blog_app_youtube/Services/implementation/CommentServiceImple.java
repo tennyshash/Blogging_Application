@@ -57,11 +57,22 @@ public class CommentServiceImple implements CommentService {
 
     @Override
     public void deleteComment(Long commentID) {
-
-        Comment comment=commentRepository.findById(commentID).orElseThrow(
-                ()-> new ResourceNotFoundException("Comment" , " comment ID", commentID)
-        );
-        commentRepository.delete(comment);
+        try {
+            Comment comment = commentRepository.findById(commentID).orElseThrow(
+                    () -> new ResourceNotFoundException("Comment", " comment ID", commentID)
+            );
+            commentRepository.delete(comment);
+            // Add a log statement to confirm that the comment was deleted
+            System.out.println("Comment deleted successfully: " + commentID);
+        } catch (ResourceNotFoundException ex) {
+            // Log the exception or handle it as needed
+            ex.printStackTrace();
+            // Optionally, re-throw the exception if necessary
+            throw ex;
+        } catch (Exception e) {
+            // Log any other exceptions that may occur during deletion
+            e.printStackTrace();
+        }
     }
 
 

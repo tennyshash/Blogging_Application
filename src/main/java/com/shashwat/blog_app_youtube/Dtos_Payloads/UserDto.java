@@ -20,7 +20,7 @@ public class UserDto {
     //@JsonView(View.Base.class)
     private Long userId;
 
-    @JsonView(View.Base.class)
+    //@JsonView(View.Base.class)
     @NotEmpty(message = "Field is Blank .! Try Again")
     @Size(min = 4, message = "Username Must be of minimum of 4 characters ..!!")
     private String name;
