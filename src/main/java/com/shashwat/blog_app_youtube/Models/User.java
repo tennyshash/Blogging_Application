@@ -46,6 +46,7 @@ public class User extends BaseModel implements UserDetails {
             joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id")
     )
+
     private Set<Role> roles= new HashSet<>();
 
     //----------------->METHODS of UserDetails interface

@@ -38,12 +38,28 @@ public class UserServiceImple implements UserService {
         this.passwordEncoder=passwordEncoder;
         this.roleRepository=roleRepository;
     }
+
     @Override
-    public UserDto createUser(UserDto userDto){
-        User user=dtoTOUser(userDto);
-        User savedUSer= userRepository.save(user);
-        return userToDto(user);
+    public UserDto registerNewUSer(UserDto userDto) {
+
+        User user=modelMapper.map(userDto,User.class);
+        // password coded
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        //roles
+
+        //extra step to make myself admin for first time..!
+        if(user.getEmail().equals("shashwatpratap@gmail.com")){
+            Role role=roleRepository.findById(AppConstants.ADMIN_USER).get();
+            user.getRoles().add(role);
+        }else {
+            Role role=roleRepository.findById(AppConstants.NORMAL_USER).get();
+            user.getRoles().add(role);
+        }
+        User savedUser=userRepository.save(user);
+
+        return modelMapper.map(savedUser,UserDto.class);
     }
+
     @Override
     public UpdateUserDto updateUser(UpdateUserDto request, Long userId){
 
@@ -71,6 +87,8 @@ public class UserServiceImple implements UserService {
         User user= userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
         return  userToDto(user);
     }
+
+                                /*          -->>>ADMIN USER Fields <<<<----     */
     @Override
     public UserPaginationResponse getAllUser(Integer pageNumber, Integer pageSize , String sortBy, String sortDir){
 
@@ -100,32 +118,11 @@ public class UserServiceImple implements UserService {
         User user=userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User" ,"ID" , userId));
          userRepository.delete(user);
     }
-    private User dtoTOUser(UserDto userDto){
-        User user= modelMapper.map(userDto,User.class);
-        return  user;
-    }
-    private UserDto userToDto(User user){
-        UserDto userDto= modelMapper.map(user,UserDto.class);
-        return userDto;
-    }
-
-    @Override
-    public UserDto registerNewUSer(UserDto userDto) {
-
-        User user=modelMapper.map(userDto,User.class);
-        // password coded
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        //roles
-        Role role=roleRepository.findById(AppConstants.NORMAL_USER).get();
-        user.getRoles().add(role);
-
-        User savedUser=userRepository.save(user);
-
-        return modelMapper.map(savedUser,UserDto.class);
-    }
 
     @Override
     public void updateRole(Long userID, Integer roleID) {
+
+        //TODO: update isAdmin in user
 
         User user= userRepository.findById(userID).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userID));
 
@@ -136,4 +133,24 @@ public class UserServiceImple implements UserService {
         userRepository.save(user);
 
     }
+
+                        /*          -->>>Model Mapper via Methods <<<<----     */
+
+    private User dtoTOUser(UserDto userDto){
+        User user= modelMapper.map(userDto,User.class);
+        return  user;
+    }
+
+    private UserDto userToDto(User user){
+        UserDto userDto= modelMapper.map(user,UserDto.class);
+        return userDto;
+    }
+
+    @Override
+    public UserDto createUser(UserDto userDto){
+        User user=dtoTOUser(userDto);
+        User savedUSer= userRepository.save(user);
+        return userToDto(user);
+    }
+
 }

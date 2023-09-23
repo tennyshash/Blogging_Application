@@ -42,28 +42,6 @@ public class UserController {
         return   ResponseEntity.ok(updatedUSer);
     }
 
-    //DELETE only Admin can delete User (Use Case)
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{userID}")
-    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable ("userID") Long uID){
-        userService.deleteUser(uID);
-        return new ResponseEntity( new ApiResponseDto("SUCCESS","User Have Been Deleted")
-                ,HttpStatus.OK);
-    }
-    //GET ALL USER
-    @JsonView(View.Admin.class) //  when we want to hide some sensitive content eg. password and display rest things
-    @GetMapping("/")
-    public ResponseEntity<List<UserDto>> getAllUser(
-            @RequestParam (value = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
-            @RequestParam (value = "pageSize",  defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
-            @RequestParam (value = "sortBy",    defaultValue = AppConstants.SORT_BY,required = false) String sortBy,
-            @RequestParam (value = "sortDir",   defaultValue = AppConstants.SORT_DIR, required = false) String sortDir ){
-
-        UserPaginationResponse response=userService.getAllUser(pageNumber,pageSize,sortBy,sortBy);
-        return ResponseEntity.ok().body(response.getContent());
-    }
-
     //GET A USER
     //@JsonView(View.Admin.class)
     @GetMapping("/{userID}")
@@ -71,9 +49,34 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userID));
     }
 
+          /*          -->>>ADMIN USER Fields <<<<----     */
+
+    //GET ALL USER
+    //@JsonView(View.Admin.class) //  when we want to hide some sensitive content eg. password and display rest things
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/")
+    public ResponseEntity<UserPaginationResponse> getAllUser(
+            @RequestParam (value = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER,required = false) Integer pageNumber,
+            @RequestParam (value = "pageSize",  defaultValue = AppConstants.PAGE_SIZE,required = false) Integer pageSize,
+            @RequestParam (value = "sortBy",    defaultValue = AppConstants.SORT_BY,required = false) String sortBy,
+            @RequestParam (value = "sortDir",   defaultValue = AppConstants.SORT_DIR, required = false) String sortDir ){
+
+        UserPaginationResponse response=userService.getAllUser(pageNumber,pageSize,sortBy,sortBy);
+        return ResponseEntity.ok().body(response);
+    }
+
+    //DELETE only Admin can delete User (Use Case)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{userID}")
+    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable ("userID") Long uID){
+        userService.deleteUser(uID);
+        return new ResponseEntity( new ApiResponseDto("SUCCESS","User Have Been Deleted")
+                ,HttpStatus.OK);
+    }
+
     // UPDATE ROLE
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/{userID}/role/{roleID}")
+    @PutMapping("/{userID}/role/{roleID}")
     public ResponseEntity<ApiResponseDto> updateRole(@PathVariable Long userID,
                                                      @PathVariable Integer roleID){
         userService.updateRole(userID,roleID);

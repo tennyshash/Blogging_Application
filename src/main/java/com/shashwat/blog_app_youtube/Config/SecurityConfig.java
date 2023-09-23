@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .cors( cors-> cors.disable())
                 .authorizeHttpRequests( auth-> auth.requestMatchers(AppConstants.PUBLIC_URL).permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll()
+                        //.requestMatchers("").hasRole("ROLE_ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling( ex-> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement( session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
