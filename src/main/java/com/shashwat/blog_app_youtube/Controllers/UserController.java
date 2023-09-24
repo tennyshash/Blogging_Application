@@ -1,12 +1,9 @@
 package com.shashwat.blog_app_youtube.Controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
 import com.shashwat.blog_app_youtube.Services.implementation.UserServiceImple;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -37,8 +32,8 @@ public class UserController {
 
     //UPDATE USER
     @PutMapping("/{userID}")
-    public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto updateUser, @PathVariable Long userID){
-        UpdateUserDto updatedUSer= userService.updateUser(updateUser,userID);
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto updateUser, @PathVariable Long userID){
+        UserDto updatedUSer= userService.updateUser(updateUser,userID);
         return   ResponseEntity.ok(updatedUSer);
     }
 

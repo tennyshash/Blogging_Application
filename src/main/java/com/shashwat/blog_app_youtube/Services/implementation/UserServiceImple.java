@@ -1,9 +1,9 @@
 package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
+import com.shashwat.blog_app_youtube.Exception.ApiException;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
 import com.shashwat.blog_app_youtube.Models.Role;
 import com.shashwat.blog_app_youtube.Models.User;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +41,15 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public UserDto registerNewUSer(UserDto userDto) {
+    public UserDto registerNewUSer(UserDto request) {
 
-        User user=modelMapper.map(userDto,User.class);
+        // Check For User Exist with Given Email or not ..!
+        Optional<User> checkUser=userRepository.findByEmail(request.getEmail());
+        if(checkUser.isPresent()){
+            throw new ApiException("User Already Exist With Given Email");
+        }
+
+        User user=modelMapper.map(request,User.class);
         // password coded
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //roles
@@ -61,7 +68,7 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public UpdateUserDto updateUser(UpdateUserDto request, Long userId){
+    public UserDto updateUser(UserDto request, Long userId){
 
         User user=userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
 
@@ -77,7 +84,7 @@ public class UserServiceImple implements UserService {
 
         User updateUser=userRepository.save(user);
 
-        UpdateUserDto response= modelMapper.map( updateUser,UpdateUserDto.class);
+        UserDto response= modelMapper.map( updateUser,UserDto.class);
         response.setPassword(" Mai Nahi btauga .!!");
 
         return  response;
