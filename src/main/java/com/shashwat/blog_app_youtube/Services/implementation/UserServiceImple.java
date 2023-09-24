@@ -1,6 +1,7 @@
 package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Exception.ApiException;
@@ -68,7 +69,7 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public UserDto updateUser(UserDto request, Long userId){
+    public UpdateUserDto updateUser(UpdateUserDto request, Long userId){
 
         User user=userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
 
@@ -84,7 +85,7 @@ public class UserServiceImple implements UserService {
 
         User updateUser=userRepository.save(user);
 
-        UserDto response= modelMapper.map( updateUser,UserDto.class);
+        UpdateUserDto response= modelMapper.map( updateUser,UpdateUserDto.class);
         response.setPassword(" Mai Nahi btauga .!!");
 
         return  response;

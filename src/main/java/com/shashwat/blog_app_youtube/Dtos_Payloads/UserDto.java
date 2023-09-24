@@ -8,6 +8,7 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,11 +28,12 @@ public class UserDto {
 
     //@JsonView(View.Base.class)
     @Email(message = "Your Email Address is Not Valid ..!!")
-    @NotEmpty(message = "Enter proper email address ")
+    @NotEmpty(message = "Enter proper email address " )
+
     private String email;
 
     @NotEmpty
-    @Size(min = 3, max = 10 ,message = "Password must be in of minimum 3 characters and maximum of 10 characters ..!! ")
+    @Size(min = 6, max = 12 ,message = "Password must be in of minimum 6 characters and maximum of 12 characters ..!! ")
     //@Pattern(regexp = )  used to match password input patter like 2 caps one special cahr etc..
     //TODO:
     private String password;
