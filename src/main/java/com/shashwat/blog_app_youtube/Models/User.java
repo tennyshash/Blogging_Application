@@ -1,5 +1,6 @@
 package com.shashwat.blog_app_youtube.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
 import jakarta.persistence.*;
@@ -33,20 +34,34 @@ public class User extends BaseModel implements UserDetails {
 
     private String about;
 
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Likes> like = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Comment> comments= new ArrayList<>();
+//
+//
+//    @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
+//    private List<Post> posts = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Add this annotation to indicate the "like" property is managed (forward) side
+    private List<Likes> like = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Add this annotation to indicate the "comments" property is managed (forward) side
     private List<Comment> comments= new ArrayList<>();
 
-
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , fetch = FetchType.LAZY )
+    @JsonManagedReference // Add this annotation to indicate the "posts" property is managed (forward) side
     private List<Post> posts = new ArrayList<>();
-
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id")
     )
-
     private Set<Role> roles= new HashSet<>();
 
     //----------------->METHODS of UserDetails interface

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Category extends BaseModel{
 
-    @Column(name = "Title",length = 20, nullable = false)
+    @Column(name = "Title",length = 50, nullable = false)
     private String categoryTitle;
 
     @Column(name = "Description")

@@ -1,17 +1,19 @@
 package com.shashwat.blog_app_youtube.Services.implementation;
 
+import com.shashwat.blog_app_youtube.Dtos_Payloads.LikeDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.PostPaginationResponse;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.PostRequestDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.PostResponseDto;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
 import com.shashwat.blog_app_youtube.Models.Category;
-import com.shashwat.blog_app_youtube.Models.Comment;
+import com.shashwat.blog_app_youtube.Models.Likes;
 import com.shashwat.blog_app_youtube.Models.Post;
 import com.shashwat.blog_app_youtube.Models.User;
 import com.shashwat.blog_app_youtube.Repository.CategoryRepository;
-import com.shashwat.blog_app_youtube.Repository.CommentRepository;
+import com.shashwat.blog_app_youtube.Repository.LikesRepository;
 import com.shashwat.blog_app_youtube.Repository.PostRepository;
 import com.shashwat.blog_app_youtube.Repository.UserRepository;
+import com.shashwat.blog_app_youtube.Services.LikeService;
 import com.shashwat.blog_app_youtube.Services.PostService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,6 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,15 +29,18 @@ public class PostServiceImple implements PostService {
     private PostRepository postRepository;
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
+    private LikeService likeService;
 
 
     @Autowired
     public PostServiceImple(ModelMapper modelMapper, PostRepository postRepository
-            , UserRepository userRepository, CategoryRepository categoryRepository) {
+            , UserRepository userRepository, CategoryRepository categoryRepository
+            , LikeService likeService) {
         this.modelMapper = modelMapper;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.likeService=likeService;
     }
 
 
@@ -96,7 +100,11 @@ public class PostServiceImple implements PostService {
         Post post=postRepository.findById(postID)
                 .orElseThrow( ()-> new ResourceNotFoundException( "Post ", "Post ID" ,postID));
 
-        return modelMapper.map(post, PostResponseDto.class);
+        PostResponseDto response= modelMapper.map(post, PostResponseDto.class);
+
+        response.setLikes( likeService.getLikesOnPost(postID));
+
+         return response;
     }
 
     //GET ALL POST

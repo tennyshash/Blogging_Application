@@ -1,11 +1,13 @@
 package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Exception.ApiException;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
+import com.shashwat.blog_app_youtube.Models.Likes;
 import com.shashwat.blog_app_youtube.Models.Role;
 import com.shashwat.blog_app_youtube.Models.User;
 import com.shashwat.blog_app_youtube.Repository.RoleRepository;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImple implements UserService {
     private UserRepository userRepository;
+
     private ModelMapper modelMapper;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
@@ -96,7 +99,7 @@ public class UserServiceImple implements UserService {
         return  userToDto(user);
     }
 
-                                /*          -->>>ADMIN USER Fields <<<<----     */
+    /*          -->>>ADMIN USER Fields <<<<----     */
     @Override
     public UserPaginationResponse getAllUser(Integer pageNumber, Integer pageSize , String sortBy, String sortDir){
 
@@ -135,8 +138,8 @@ public class UserServiceImple implements UserService {
         User user= userRepository.findById(userID).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userID));
 
         Role role=roleRepository.findById(roleID).get();
-        user.setRoles(new HashSet<>());
-        user.getRoles().add(role);
+            user.setRoles(new HashSet<>());
+            user.getRoles().add(role);
 
         userRepository.save(user);
 

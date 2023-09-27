@@ -1,0 +1,29 @@
+package com.shashwat.blog_app_youtube.Repository;
+
+
+import com.shashwat.blog_app_youtube.Models.Likes;
+import com.shashwat.blog_app_youtube.Models.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface LikesRepository  extends JpaRepository<Likes, Long> {
+
+    Likes save ( Likes likes);
+
+//    @Query(value = "SELECT * FROM Likes l where l.post_id=?1" , nativeQuery = true)
+//    List<Likes> getlikesByPost(Long postID);
+
+            //or
+    List<Likes> getAllByPostId(Long postID);
+
+    Optional<Likes> getByPostIdAndAndUserId(Long postID, Long userID);
+
+    @Override
+    void delete(Likes entity);
+}

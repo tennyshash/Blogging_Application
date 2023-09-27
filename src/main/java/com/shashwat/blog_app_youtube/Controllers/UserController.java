@@ -7,6 +7,7 @@ import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Services.implementation.UserServiceImple;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,6 @@ public class UserController {
     public ResponseEntity<UserDto> getSingleUser(@PathVariable Long userID){
         return ResponseEntity.ok(userService.getUserById(userID));
     }
-
           /*          -->>>ADMIN USER Fields <<<<----     */
 
     //GET ALL USER
