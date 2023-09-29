@@ -2,6 +2,7 @@ package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.FollowerResponse;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
@@ -95,11 +96,72 @@ public class UserServiceImple implements UserService {
     }
     @Override
     public UserDto getUserById(Long userId){
-        User user= userRepository.findById(userId).orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
-        return  userToDto(user);
+        User user= userRepository.findById(userId)
+                .orElseThrow( ()-> new ResourceNotFoundException("User", "ID", userId));
+
+           /*         List<FollowerResponse> followingList= user.getFollowing().stream().map(
+                    user1 -> new FollowerResponse(user1.getId(),user1.getName())
+            ).collect(Collectors.toList());
+
+            List<FollowerResponse> followerList=user.getFollowers().stream().map(
+                    user1 -> modelMapper.map( user1,FollowerResponse.class)
+            ).collect(Collectors.toList());
+
+        response.setFollowing(followingList);
+        response.setFollowers(followerList);    */
+
+        return userToDto(user);
     }
 
-    /*          -->>>ADMIN USER Fields <<<<----     */
+    @Override
+    public ApiResponseDto followUser(Long followerID, Long followingID) {
+
+        if(followerID==followingID) throw new  ApiException ("Invalid Data.");
+
+        User userWhoFollow= userRepository.findById(followerID)
+                .orElseThrow( ()-> new ResourceNotFoundException("User", "ID", followerID) );
+
+        User userToFollow=userRepository.findById(followingID)
+                .orElseThrow( ()-> new ResourceNotFoundException("User to Follow with ", "ID" , followingID));
+
+        if(userToFollow.getFollowers().contains(userWhoFollow) && userWhoFollow.getFollowing().contains(userToFollow)){
+            return new ApiResponseDto("Success", "Already Followed ");
+        }
+
+        userToFollow.getFollowers().add(userWhoFollow);
+            userRepository.save(userToFollow);
+
+        userWhoFollow.getFollowing().add(userToFollow);
+            userRepository.save(userWhoFollow);
+
+        return new ApiResponseDto("Success", "Followed Successfully");
+    }
+
+    @Override
+    public ApiResponseDto unFollowUser(Long followerID, Long followingID) {
+
+        if(followerID==followingID) throw new  ApiException ("Invalid Data.");
+
+        User userWhoWantToUnFollow= userRepository.findById(followerID)
+                .orElseThrow( ()-> new ResourceNotFoundException("User", "ID", followerID) );
+
+        User userToUnFollow=userRepository.findById(followingID)
+                .orElseThrow( ()-> new ResourceNotFoundException("User to Follow with ", "ID" , followingID));
+
+        if(!userToUnFollow.getFollowers().contains(userWhoWantToUnFollow) && !userWhoWantToUnFollow.getFollowing().contains(userToUnFollow)){
+            return new ApiResponseDto("Failure", "User Does Not Follow ");
+        }
+
+        userToUnFollow.getFollowers().remove(userWhoWantToUnFollow);
+        userRepository.save(userToUnFollow);
+
+        userWhoWantToUnFollow.getFollowing().remove(userToUnFollow);
+        userRepository.save(userWhoWantToUnFollow);
+
+        return new ApiResponseDto("Success", "UnFollowed Successfully");
+    }
+
+                            /*          -->>>ADMIN USER Fields <<<<----     */
     @Override
     public UserPaginationResponse getAllUser(Integer pageNumber, Integer pageSize , String sortBy, String sortDir){
 

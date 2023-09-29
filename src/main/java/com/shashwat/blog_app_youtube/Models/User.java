@@ -1,5 +1,6 @@
 package com.shashwat.blog_app_youtube.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.View;
@@ -63,6 +64,21 @@ public class User extends BaseModel implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role", referencedColumnName = "id")
     )
     private Set<Role> roles= new HashSet<>();
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "followers",
+            joinColumns = @JoinColumn(name = "following_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    //@JsonBackReference
+    private List<User> followers;
+
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "followers")
+    //@JsonManagedReference
+    private List<User> following;
+
 
     //----------------->METHODS of UserDetails interface
     @Override

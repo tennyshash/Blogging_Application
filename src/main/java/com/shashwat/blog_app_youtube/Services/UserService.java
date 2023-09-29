@@ -12,6 +12,12 @@ public interface UserService {
     UpdateUserDto updateUser(UpdateUserDto userDto, Long userId);
 
     UserDto getUserById(Long userId);
+
+    ApiResponseDto followUser(Long followerID , Long followingID);
+    ApiResponseDto unFollowUser(Long followerID , Long followingID);
+
+                    /*          -->>>ADMIN USER Fields <<<<----     */
+
     UserPaginationResponse getAllUser(Integer pageNumber, Integer pageSize , String sortBy, String sortDir);
     void deleteUser(Long userId);
 

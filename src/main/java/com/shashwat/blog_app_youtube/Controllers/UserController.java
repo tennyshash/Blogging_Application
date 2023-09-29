@@ -7,8 +7,6 @@ import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Services.implementation.UserServiceImple;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,22 +31,36 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }   */
 
-    //UPDATE USER
+                                            /*  UPDATE USER */
     @PutMapping("/{userID}")
     public ResponseEntity<UpdateUserDto> updateUser(@Valid @RequestBody UpdateUserDto updateUser, @PathVariable Long userID){
         UpdateUserDto updatedUSer= userService.updateUser(updateUser,userID);
         return   ResponseEntity.ok(updatedUSer);
     }
 
-    //GET A USER
+                                            /*   GET A USER     */
     //@JsonView(View.Admin.class)
     @GetMapping("/{userID}")
     public ResponseEntity<UserDto> getSingleUser(@PathVariable Long userID){
         return ResponseEntity.ok(userService.getUserById(userID));
     }
-          /*          -->>>ADMIN USER Fields <<<<----     */
 
-    //GET ALL USER
+                                            /*   FOLLOW     */
+    @PostMapping("/{followerID}/following/{followingID}/follow")
+    public ResponseEntity<ApiResponseDto> followUser(@PathVariable Long followerID , @PathVariable Long followingID ){
+        return ResponseEntity.ok(userService.followUser(followerID,followingID));
+    }
+
+                                            /*  UNFOLLOW    */
+    @PutMapping("/{followerID}/following/{followingID}/unfollow")
+    public ResponseEntity<ApiResponseDto> unFollowUser(@PathVariable Long followerID , @PathVariable Long followingID ){
+        return ResponseEntity.ok(userService.unFollowUser(followerID,followingID));
+    }
+
+
+                            /*          -->>>ADMIN USER Fields <<<<----     */
+
+                                            /*  GET ALL USER    */
     //@JsonView(View.Admin.class) //  when we want to hide some sensitive content eg. password and display rest things
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/")
@@ -62,7 +74,7 @@ public class UserController {
         return ResponseEntity.ok().body(response);
     }
 
-    //DELETE only Admin can delete User (Use Case)
+                                            /*  DELETE USER   */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{userID}")
     public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable ("userID") Long uID){
@@ -71,7 +83,7 @@ public class UserController {
                 ,HttpStatus.OK);
     }
 
-    // UPDATE ROLE
+                                            /*  UPDATE ROLE */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{userID}/role/{roleID}")
     public ResponseEntity<ApiResponseDto> updateRole(@PathVariable Long userID,

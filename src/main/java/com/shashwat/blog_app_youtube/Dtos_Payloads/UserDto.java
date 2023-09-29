@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.shashwat.blog_app_youtube.Models.Role;
+import com.shashwat.blog_app_youtube.Models.User;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -45,8 +47,12 @@ public class UserDto {
     //@JsonView(View.Admin.class)
     private Set<RoleDto> roles=new HashSet<>();
 
+    private List<FollowerResponse> followers;
+
+    private List<FollowerResponse> following;
+
     @JsonIgnore
-    // To ignore password while displaying but due to some reason it was also ignoring set passwrod so we were not able to set..
+    // To ignore password while displaying but due to some reason it was also ignoring set password so we were not able to set..
     public String getPassword() {
         return password;
     }

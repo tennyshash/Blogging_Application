@@ -38,6 +38,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+
+
+									<!-- ___________________ JWT  dependency  -->
+
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -45,7 +49,6 @@
 			<version>0.11.5</version>
 		</dependency>
 
-									<!-- ___________________ JWT  dependency  -->
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
