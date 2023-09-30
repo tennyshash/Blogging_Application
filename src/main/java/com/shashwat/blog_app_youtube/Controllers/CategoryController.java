@@ -6,6 +6,7 @@ import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.CategoryPaginationResponse;
 import com.shashwat.blog_app_youtube.Models.Category;
 import com.shashwat.blog_app_youtube.Repository.CategoryRepository;
+import com.shashwat.blog_app_youtube.Services.CategoryService;
 import com.shashwat.blog_app_youtube.Services.implementation.CategoryServiceImple;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -27,10 +28,10 @@ public class CategoryController {
     @Autowired
     private ModelMapper modelMapper;
 
-    private CategoryServiceImple categoryService;
+    private CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryServiceImple categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

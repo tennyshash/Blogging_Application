@@ -5,6 +5,7 @@ import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
+import com.shashwat.blog_app_youtube.Services.UserService;
 import com.shashwat.blog_app_youtube.Services.implementation.UserServiceImple;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private UserServiceImple userService;
+    private UserService userService;
 
     @Autowired
-    public UserController(UserServiceImple userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

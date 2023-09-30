@@ -3,6 +3,8 @@ package com.shashwat.blog_app_youtube.Controllers;
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.*;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.PostPaginationResponse;
+import com.shashwat.blog_app_youtube.Services.FileService;
+import com.shashwat.blog_app_youtube.Services.PostService;
 import com.shashwat.blog_app_youtube.Services.implementation.FileServiceImple;
 import com.shashwat.blog_app_youtube.Services.implementation.PostServiceImple;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,15 +24,15 @@ import java.io.InputStream;
 @RestController
 @RequestMapping("/")
 public class PostController {
-    private PostServiceImple postService;
-    private FileServiceImple fileService;
+    private PostService postService;
+    private FileService fileService;
 
     @Value("${project.image}")
     private String path;
 
 
     @Autowired
-    public PostController(PostServiceImple postService , FileServiceImple fileService) {
+    public PostController(PostService postService , FileService fileService) {
         this.postService = postService;
         this.fileService=fileService;
     }
