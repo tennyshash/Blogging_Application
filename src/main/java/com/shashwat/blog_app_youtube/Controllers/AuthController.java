@@ -1,5 +1,6 @@
 package com.shashwat.blog_app_youtube.Controllers;
 
+import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.JwtAuthRequest;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.JwtAuthResponse;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
@@ -12,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+import java.io.IOException;
 import java.util.Date;
 
 
@@ -79,16 +81,28 @@ public class AuthController {
         try {
             authenticationManager.authenticate(authenticationToken);
         }catch (BadCredentialsException e){
-            throw  new ApiException("Invalid Credentials");
+            throw  new ApiException("Invalid Credentials ");
         }
     }
 
     //register new user api
     @PostMapping("/register")
-    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserDto userDto){
+    public ResponseEntity<UserDto> registerUser(@Valid @RequestBody UserDto userDto)  {
 
         UserDto registerUser=userService.registerNewUSer(userDto);
         return new ResponseEntity<UserDto>(registerUser,HttpStatus.CREATED);
 
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/register/createUsers")
+    public ResponseEntity<ApiResponseDto> createUserInBulk(String urll) throws IOException {
+        String url="C:\\Users\\Lenovo\\Onerive\\Desktop\\ReadExcel.xlsx";
+        ApiResponseDto response= null;
+        //try {
+            response = userService.registerUsersInBulk(url);
+//        } catch (IOException e) {
+//            throw new ApiException("Error in Connecting with EXCEL");
+//        }  either use try catch & handle exception or use throws in signature and catch globally.
+        return new ResponseEntity<ApiResponseDto>(response,HttpStatus.OK);
     }
 }

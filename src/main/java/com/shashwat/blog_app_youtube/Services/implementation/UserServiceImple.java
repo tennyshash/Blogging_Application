@@ -2,18 +2,17 @@ package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.FollowerResponse;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
 import com.shashwat.blog_app_youtube.Exception.ApiException;
 import com.shashwat.blog_app_youtube.Exception.ResourceNotFoundException;
-import com.shashwat.blog_app_youtube.Models.Likes;
 import com.shashwat.blog_app_youtube.Models.Role;
 import com.shashwat.blog_app_youtube.Models.User;
 import com.shashwat.blog_app_youtube.Repository.RoleRepository;
 import com.shashwat.blog_app_youtube.Repository.UserRepository;
 import com.shashwat.blog_app_youtube.Services.UserService;
+import org.apache.poi.ss.usermodel.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +46,7 @@ public class UserServiceImple implements UserService {
     }
 
     @Override
-    public UserDto registerNewUSer(UserDto request) {
+    public UserDto registerNewUSer(UserDto request)  {
 
         // Check For User Exist with Given Email or not ..!
         Optional<User> checkUser=userRepository.findByEmail(request.getEmail());
@@ -58,8 +58,7 @@ public class UserServiceImple implements UserService {
         // password coded
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //roles
-
-        //extra step to make myself admin for first time..!
+        //extra step to make myself admin for first time !
         if(user.getEmail().equals("shashwatpratap@gmail.com")){
             Role role=roleRepository.findById(AppConstants.ADMIN_USER).get();
             user.getRoles().add(role);
@@ -185,6 +184,60 @@ public class UserServiceImple implements UserService {
             userPaginationResponse.setLastPage(page.isLast());
 
         return  userPaginationResponse;
+    }
+    @Override
+    public ApiResponseDto registerUsersInBulk(String url) throws IOException {
+            FileInputStream fileInputStream= new FileInputStream(url);
+            Workbook wb= WorkbookFactory.create(fileInputStream);
+            Sheet sheet= wb.getSheet("sheet1");
+
+            for( int i=1;i<sheet.getLastRowNum();i++){
+                UserDto userDto= new UserDto();
+                for( int j=0;j<sheet.getRow(i).getLastCellNum();j++){
+                    Row row= sheet.getRow(i);
+                    Cell cell= row.getCell(j);
+                    String data=cell.getStringCellValue();
+                    switch(j){
+                        case 0:
+                            userDto.setName(data);
+                            break;
+                        case 1:
+                            userDto.setEmail(data);
+                            break;
+                        case 2:
+                            userDto.setPassword(data);
+                            break;
+                        case 3:
+                            userDto.setAbout(data);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                // Check For User Exist with Given Email or not ..!
+                Optional<User> checkUser=userRepository.findByEmail(userDto.getEmail());
+                if(checkUser.isPresent()){
+                    this.writeInExcel(url, sheet.getSheetName(),i,sheet.getRow(i).getLastCellNum(),"User Already Exist" );
+                    continue;
+                }
+                this.registerNewUSer( userDto);
+                this.writeInExcel(url, sheet.getSheetName(),i,sheet.getRow(i).getLastCellNum(),"User Registered" );
+
+            }
+            return new ApiResponseDto("Success" , "All Users registered ");
+    }
+    @Override
+    public void writeInExcel(String url,String sheet,int nRow, int nCell, String Data) throws IOException {
+        FileInputStream fileInputStream= new FileInputStream(url);
+        Workbook workbook=WorkbookFactory.create(fileInputStream);
+        Sheet sheet1= workbook.getSheet(sheet);
+        Row row= sheet1.getRow(nRow);
+        Cell cell=row.createCell(nCell);
+        cell.setCellValue(Data);
+
+        FileOutputStream fileOutputStream= new FileOutputStream(url);
+        workbook.write(fileOutputStream);
+
     }
     @Override
     public void deleteUser(Long userId){
