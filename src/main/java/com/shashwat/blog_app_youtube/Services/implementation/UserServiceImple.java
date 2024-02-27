@@ -2,6 +2,7 @@ package com.shashwat.blog_app_youtube.Services.implementation;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.ForgetPasswordDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
@@ -69,6 +70,26 @@ public class UserServiceImple implements UserService {
         User savedUser=userRepository.save(user);
 
         return modelMapper.map(savedUser,UserDto.class);
+    }
+
+    @Override
+    public ApiResponseDto forgetPassword(ForgetPasswordDto request) {
+        // Validating user & user name
+        Optional<User> optionalUser=userRepository.findByEmail(request.getEmail());
+        if(optionalUser.isEmpty())
+            throw  new ApiException("User Does not exist with Given Email");
+
+        User user=optionalUser.get();
+
+        if(!user.getName().equals(request.getName()))
+            throw new ApiException("Please Check your Email id &  User Name : They should be of same Account");
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        User updateUser=userRepository.save(user);
+
+        ApiResponseDto response= new ApiResponseDto("SUCCESS", "Password Set Successfully.");
+
+        return response;
     }
 
     @Override

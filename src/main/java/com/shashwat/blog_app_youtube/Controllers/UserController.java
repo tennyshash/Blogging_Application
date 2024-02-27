@@ -2,6 +2,7 @@ package com.shashwat.blog_app_youtube.Controllers;
 
 import com.shashwat.blog_app_youtube.Config.AppConstants;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.ForgetPasswordDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UpdateUserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
 import com.shashwat.blog_app_youtube.Dtos_Payloads.Pagination.UserPaginationResponse;
@@ -31,6 +32,14 @@ public class UserController {
         UserDto createdUser=userService.createUser(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }   */
+
+                                            /*  Password Reset */
+    @PutMapping("/forgetPassword")
+    public ResponseEntity<ApiResponseDto> forgetPassword(@RequestBody ForgetPasswordDto request){
+
+        ApiResponseDto response=userService.forgetPassword(request);
+        return new ResponseEntity<ApiResponseDto>( response, HttpStatus.ACCEPTED);
+    }
 
                                             /*  UPDATE USER */
     @PutMapping("/{userID}")

@@ -1,9 +1,6 @@
 package com.shashwat.blog_app_youtube.Controllers;
 
-import com.shashwat.blog_app_youtube.Dtos_Payloads.ApiResponseDto;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.JwtAuthRequest;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.JwtAuthResponse;
-import com.shashwat.blog_app_youtube.Dtos_Payloads.UserDto;
+import com.shashwat.blog_app_youtube.Dtos_Payloads.*;
 import com.shashwat.blog_app_youtube.Exception.ApiException;
 import com.shashwat.blog_app_youtube.Models.User;
 import com.shashwat.blog_app_youtube.Security.JwtTokenHelper;
@@ -78,11 +75,7 @@ public class AuthController {
     private void authenticate(String email, String password)  {
 
         UsernamePasswordAuthenticationToken authenticationToken= new UsernamePasswordAuthenticationToken(email,password);
-        try {
-            authenticationManager.authenticate(authenticationToken);
-        }catch (BadCredentialsException e){
-            throw  new ApiException("Invalid Credentials ");
-        }
+        authenticationManager.authenticate(authenticationToken);
     }
 
     //register new user api
@@ -93,6 +86,7 @@ public class AuthController {
         return new ResponseEntity<UserDto>(registerUser,HttpStatus.CREATED);
 
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/register/createUsers")
     public ResponseEntity<ApiResponseDto> createUserInBulk(String urll) throws IOException {
